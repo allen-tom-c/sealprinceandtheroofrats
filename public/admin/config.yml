@@ -1,0 +1,136 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Where uploaded media files land
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+# Show live preview while editing
+# (Netlify builds on every save, so preview may lag ~60s)
+
+collections:
+
+  # ── SHOWS ─────────────────────────────────────────────────────────────────
+  - name: shows
+    label: Shows
+    label_singular: Show
+    folder: src/content/shows
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{fields.venue}}"
+    extension: md
+    format: frontmatter
+    sortable_fields: ["sortDate"]
+    fields:
+      - label: Display Date
+        name: dateDisplay
+        widget: string
+        hint: "Exactly as shown on site — e.g. 'Wed 2 Apr 2026' or '24–26 Apr 2026'"
+      - label: Sort Date
+        name: sortDate
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: false
+        hint: "Used for ordering. For multi-day events, use the first day."
+      - label: Venue
+        name: venue
+        widget: string
+      - label: City & State
+        name: city
+        widget: string
+        hint: "e.g. 'Geelong, VIC' or 'Canberra, ACT'"
+      - label: Traditional Country
+        name: country
+        widget: string
+        hint: "e.g. 'Wadawurrung Country' or 'Ngunnawal Country'"
+      - label: Show Note
+        name: note
+        widget: string
+        required: false
+        hint: "Optional — e.g. 'Single Launch' or 'Sold Out'"
+      - label: Ticket URL
+        name: ticketUrl
+        widget: string
+        required: false
+        hint: "Link to tickets — leave blank if not available"
+      - label: Past Show
+        name: past
+        widget: boolean
+        default: false
+        hint: "Tick once this show has happened — it moves to Past Shows"
+
+  # ── VIDEOS (shown on the Media page) ─────────────────────────────────────
+  - name: videos
+    label: Videos
+    label_singular: Video
+    folder: src/content/videos
+    create: true
+    delete: true
+    slug: "{{fields.title}}"
+    extension: md
+    format: frontmatter
+    sortable_fields: ["order"]
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: YouTube URL
+        name: youtubeUrl
+        widget: string
+        hint: "Full YouTube URL — e.g. https://www.youtube.com/watch?v=XXXXXXXXXXX"
+      - label: Display Order
+        name: order
+        widget: number
+        default: 1
+        hint: "Lower numbers appear first"
+
+  # ── SITE SETTINGS (bio, testimonials, photos) ──────────────────────────
+  - name: settings
+    label: Site Settings
+    files:
+
+      - name: bio
+        label: Bio & About Text
+        file: src/data/bio.json
+        fields:
+          - label: Bio — First Paragraph
+            name: paragraph1
+            widget: text
+          - label: Bio — Second Paragraph
+            name: paragraph2
+            widget: text
+          - label: Acknowledgement of Country
+            name: acknowledgement
+            widget: text
+            hint: "Shown in the About section. Acknowledge the Wadawurrung people and other nations on whose Country the band lives and performs."
+
+      - name: testimonials
+        label: Testimonials / Reviews
+        file: src/data/testimonials.json
+        fields:
+          - label: Testimonials
+            name: items
+            widget: list
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Name, name: name, widget: string }
+              - { label: Role / Description, name: role, widget: string }
+
+      - name: photos
+        label: Photo Reel
+        file: src/data/photos.json
+        fields:
+          - label: Photos
+            name: items
+            widget: list
+            hint: "Drag to reorder. Images appear left-to-right in the reel."
+            fields:
+              - label: Photo
+                name: src
+                widget: image
+                hint: "Upload a photo. Max 2MB recommended."
+              - label: Alt Text
+                name: alt
+                widget: string
+                hint: "Describe the photo for accessibility — e.g. 'Lachie playing guitar at Nannup'"

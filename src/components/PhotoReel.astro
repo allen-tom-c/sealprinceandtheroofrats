@@ -1,0 +1,56 @@
+---
+export interface Props {
+  photos: Array<{ src: string; alt: string }>;
+}
+
+const { photos } = Astro.props;
+---
+
+<div class="reel-wrap">
+  <div class="photo-reel">
+    {photos.map((photo, i) => (
+      <img
+        src={photo.src}
+        alt={photo.alt}
+        loading={i < 3 ? 'eager' : 'lazy'}
+        width="440"
+        height="330"
+        class="reel-photo"
+      />
+    ))}
+  </div>
+</div>
+
+<style>
+  .reel-wrap {
+    overflow: hidden;
+  }
+
+  .photo-reel {
+    display: flex;
+    gap: 10px;
+    padding: 0 40px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #D4C9BE #F2EBE0;
+  }
+
+  .photo-reel::-webkit-scrollbar {
+    height: 4px;
+  }
+  .photo-reel::-webkit-scrollbar-track { background: #F2EBE0; }
+  .photo-reel::-webkit-scrollbar-thumb { background: #D4C9BE; border-radius: 2px; }
+
+  .reel-photo {
+    width: 440px;
+    height: 330px;
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .photo-reel { padding: 0 20px; }
+    .reel-photo { width: 300px; height: 225px; }
+  }
+</style>

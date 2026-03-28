@@ -1,0 +1,166 @@
+---
+import Layout     from '../layouts/Layout.astro';
+import Nav        from '../components/Nav.astro';
+import Footer     from '../components/Footer.astro';
+import Rule       from '../components/Rule.astro';
+import VideoEmbed from '../components/VideoEmbed.astro';
+import { getCollection } from 'astro:content';
+
+import photosData from '../data/photos.json';
+
+const allVideos = await getCollection('videos');
+const videos = allVideos.sort((a, b) => a.data.order - b.data.order);
+const photos = photosData.items;
+---
+
+<Layout
+  title="Media — Seal Prince & the Roof Rats"
+  description="Photos and videos of Seal Prince & the Roof Rats. Earth-folk from Geelong, VIC."
+>
+  <Nav />
+
+  <section class="page-header">
+    <div class="inner">
+      <h1 class="page-title">Media</h1>
+    </div>
+  </section>
+
+  <div class="page-body">
+
+    <!-- ── PHOTOS ──────────────────────────────────────────────────────── -->
+    {photos.length > 0 && (
+      <section class="section-cream">
+        <div class="inner">
+          <h2 class="section-heading">Photos</h2>
+          <Rule />
+          <div class="photo-grid">
+            {photos.map((photo, i) => (
+              <div class="photo-cell">
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  loading={i < 6 ? 'eager' : 'lazy'}
+                  class="photo-img"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ── VIDEOS ──────────────────────────────────────────────────────── -->
+    {videos.length > 0 && (
+      <section class="section-warm">
+        <div class="inner">
+          <h2 class="section-heading">Videos</h2>
+          <Rule />
+          <div class="video-grid">
+            {videos.map(video => (
+              <VideoEmbed
+                title={video.data.title}
+                youtubeUrl={video.data.youtubeUrl}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {photos.length === 0 && videos.length === 0 && (
+      <section class="section-cream">
+        <div class="inner">
+          <p class="empty-state">Media coming soon.</p>
+        </div>
+      </section>
+    )}
+
+  </div>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ── PAGE HEADER ── */
+  .page-header {
+    background: #74C3E1;
+    padding: 64px 0 52px;
+  }
+
+  .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: #2A2420;
+    line-height: 1.1;
+  }
+
+  /* ── SECTION TYPES ── */
+  .section-cream { background: #FAF7F2; padding: 64px 0 72px; }
+  .section-warm  { background: #F2EBE0; padding: 64px 0 72px; }
+
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #2A2420;
+    margin-bottom: 4px;
+  }
+
+  /* ── PHOTO GRID ──
+     Uses CSS columns for a natural masonry feel.
+     Automatically adjusts from 1–4 columns based on screen width.
+     Adding more photos just adds more cells — no fixed limit.
+  ── */
+  .photo-grid {
+    columns: 3 280px;
+    column-gap: 12px;
+  }
+
+  .photo-cell {
+    break-inside: avoid;
+    margin-bottom: 12px;
+  }
+
+  .photo-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* ── VIDEO GRID ──
+     auto-fill: creates as many columns as fit, min 320px each.
+     Adding more videos just adds more cells.
+  ── */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
+  }
+
+  .empty-state {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: #9E8F85;
+    padding: 24px 0;
+  }
+
+  @media (max-width: 700px) {
+    .inner { padding: 0 20px; }
+    .page-title { font-size: 36px; }
+    .photo-grid { columns: 2 180px; }
+    .video-grid { grid-template-columns: 1fr; gap: 24px; }
+  }
+
+  @media (max-width: 420px) {
+    .photo-grid { columns: 1; }
+  }
+</style>

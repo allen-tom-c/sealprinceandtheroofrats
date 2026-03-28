@@ -1,0 +1,147 @@
+---
+export interface Props {
+  items: Array<{ quote: string; name: string; role: string }>;
+}
+
+const { items } = Astro.props;
+---
+
+<div class="carousel" id="carousel">
+  <div class="carousel-stage">
+    {items.map((item, i) => (
+      <div class:list={['carousel-slide', { active: i === 0 }]} data-index={i}>
+        <blockquote class="quote-text">"{item.quote}"</blockquote>
+        <p class="quote-attr">
+          — {item.name}, <em>{item.role}</em>
+        </p>
+      </div>
+    ))}
+  </div>
+
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="carousel-prev" aria-label="Previous">
+      <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+        <path d="M8.5 1L1.5 8L8.5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="carousel-dots" id="carousel-dots">
+      {items.map((_, i) => (
+        <button
+          class:list={['carousel-dot', { active: i === 0 }]}
+          data-index={i}
+          aria-label={`Testimonial ${i + 1}`}
+        />
+      ))}
+    </div>
+
+    <button class="carousel-btn" id="carousel-next" aria-label="Next">
+      <svg width="10" height="16" viewBox="0 0 10 16" fill="none">
+        <path d="M1.5 1L8.5 8L1.5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .carousel { position: relative; }
+
+  .carousel-stage {
+    min-height: 160px;
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .carousel-slide {
+    display: none;
+  }
+  .carousel-slide.active {
+    display: block;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.7;
+    color: #2A2420;
+    margin-bottom: 20px;
+  }
+
+  .quote-attr {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    color: #6B5D54;
+  }
+
+  .quote-attr em {
+    font-style: italic;
+  }
+
+  .carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .carousel-btn {
+    background: none;
+    border: 1.5px solid #2A2420;
+    color: #2A2420;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .carousel-btn:hover {
+    background: #2A2420;
+    color: #FAF7F2;
+  }
+
+  .carousel-dots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid #2A2420;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s;
+  }
+
+  .carousel-dot.active {
+    background: #2A2420;
+  }
+</style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>('.carousel-slide');
+  const dots   = document.querySelectorAll<HTMLElement>('.carousel-dot');
+  let current  = 0;
+
+  function goTo(i: number) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  document.getElementById('carousel-prev')?.addEventListener('click', () => goTo(current - 1));
+  document.getElementById('carousel-next')?.addEventListener('click', () => goTo(current + 1));
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => goTo(i));
+  });
+</script>

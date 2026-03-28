@@ -1,0 +1,300 @@
+---
+import Layout      from '../layouts/Layout.astro';
+import Nav         from '../components/Nav.astro';
+import Footer      from '../components/Footer.astro';
+import Rule        from '../components/Rule.astro';
+import PhotoReel   from '../components/PhotoReel.astro';
+import Carousel    from '../components/Carousel.astro';
+import { getCollection } from 'astro:content';
+
+import bio           from '../data/bio.json';
+import testimonials  from '../data/testimonials.json';
+import photosData    from '../data/photos.json';
+
+const allShows = await getCollection('shows');
+const upcoming = allShows
+  .filter(s => !s.data.past)
+  .sort((a, b) => a.data.sortDate.localeCompare(b.data.sortDate))
+  .slice(0, 3);
+---
+
+<Layout
+  title="Seal Prince & the Roof Rats — Earth-folk from Geelong"
+  description="Earth-folk from Geelong, VIC. Playful, raucous, tender, heartfelt. Book us for your festival or event."
+>
+  <Nav />
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <video autoplay muted loop playsinline class="hero-video">
+      <source src="/hero.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <img
+        src="/images/logo-white.png"
+        alt="Seal Prince & the Roof Rats"
+        width="220"
+        height="213"
+        loading="eager"
+        fetchpriority="high"
+        class="hero-logo"
+      />
+      <p class="hero-tagline">Earth-folk from Geelong, VIC</p>
+      <a href="mailto:sealprinceandtheroofrats@gmail.com" class="hero-cta">Book us</a>
+    </div>
+  </section>
+
+  <!-- ── PHOTO REEL ────────────────────────────────────────────────────── -->
+  <section class="section-reel">
+    <PhotoReel photos={photosData.items} />
+  </section>
+
+  <!-- ── MUSIC / RELEASES ──────────────────────────────────────────────── -->
+  <section class="section-cream">
+    <div class="inner">
+      <h2 class="section-heading-dark">Music</h2>
+      <Rule />
+      <p class="music-placeholder">[Tom/Lachie to add: Bandcamp embed or link to latest releases. Can also include album artwork grid.]</p>
+      <a href="https://sealprince.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link">Listen on Bandcamp</a>
+    </div>
+  </section>
+
+  <!-- ── ABOUT / BIO ───────────────────────────────────────────────────── -->
+  <section class="section-blue">
+    <div class="inner">
+      <h2 class="section-heading">About</h2>
+      <Rule onBlue={true} />
+      <p class="bio-para">{bio.paragraph1}</p>
+      <p class="bio-para bio-para--second">{bio.paragraph2}</p>
+      <Rule onBlue={true} />
+      <div class="acknowledgement">
+        <p class="ack-heading">Acknowledgement of Country</p>
+        <p class="ack-body">{bio.acknowledgement}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COMING UP ─────────────────────────────────────────────────────── -->
+  {upcoming.length > 0 && (
+    <section class="section-cream">
+      <div class="inner">
+        <h2 class="section-heading-dark">Coming up</h2>
+        <Rule />
+        <div class="shows-preview">
+          {upcoming.map(show => (
+            <div class="show-preview-row">
+              <div class="show-preview-left">
+                <span class="show-preview-date">{show.data.dateDisplay}</span>
+                <span class="show-preview-country">{show.data.country}</span>
+              </div>
+              <div class="show-preview-right">
+                <span class="show-preview-venue">{show.data.venue}</span>
+                <span class="show-preview-city">{show.data.city}</span>
+              </div>
+              {show.data.ticketUrl && (
+                <a href={show.data.ticketUrl} target="_blank" rel="noopener" class="show-preview-ticket">Tickets</a>
+              )}
+            </div>
+          ))}
+        </div>
+        <a href="/shows" class="all-shows-link">All shows &rarr;</a>
+      </div>
+    </section>
+  )}
+
+  <!-- ── TESTIMONIALS ──────────────────────────────────────────────────── -->
+  <section class="section-warm">
+    <div class="inner">
+      <h2 class="section-heading-dark">What people say</h2>
+      <Carousel items={testimonials.items} />
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    height: 90vh;
+    min-height: 520px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.48);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  .hero-logo { width: 180px; height: auto; }
+
+  .hero-tagline {
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em;
+  }
+
+  .hero-cta {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.7);
+    padding: 10px 28px;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+    margin-top: 8px;
+  }
+
+  .hero-cta:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: #fff;
+  }
+
+  /* ── PHOTO REEL ── */
+  .section-reel {
+    padding: 0;
+    background: #FAF7F2;
+  }
+
+  /* ── SECTION TYPES ── */
+  .section-blue  { background: #74C3E1; padding: 72px 0 64px; }
+  .section-cream { background: #FAF7F2; padding: 72px 0; }
+  .section-warm  { background: #F2EBE0; padding: 72px 0; }
+
+  .inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ── HEADINGS ── */
+  .section-heading      { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; color: #2A2420; margin-bottom: 8px; }
+  .section-heading-dark { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; color: #2A2420; margin-bottom: 8px; }
+
+  /* ── MUSIC ── */
+  .music-placeholder {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: #9E8F85;
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  .bandcamp-link {
+    display: inline-block;
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #74C3E1;
+    text-decoration: none;
+    border: 1.5px solid #74C3E1;
+    padding: 8px 20px;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .bandcamp-link:hover { background: #74C3E1; color: #1B3040; }
+
+  /* ── BIO ── */
+  .bio-para { font-family: 'Lora', serif; font-size: 17px; line-height: 1.9; color: #2A2420; margin-bottom: 24px; }
+  .bio-para--second { margin-bottom: 36px; }
+
+  /* ── ACKNOWLEDGEMENT ── */
+  .acknowledgement {
+    background: rgba(0, 0, 0, 0.07);
+    padding: 24px;
+    border-left: 3px solid rgba(0, 0, 0, 0.25);
+  }
+
+  .ack-heading { font-family: 'Caveat', cursive; font-size: 24px; color: #2A2420; margin-bottom: 8px; }
+  .ack-body { font-family: 'Lora', serif; font-style: italic; font-size: 14px; color: #6B5D54; line-height: 1.85; }
+
+  /* ── COMING UP ── */
+  .shows-preview { display: flex; flex-direction: column; }
+
+  .show-preview-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #D4C9BE;
+  }
+
+  .show-preview-left  { display: flex; flex-direction: column; gap: 2px; }
+  .show-preview-right { display: flex; flex-direction: column; gap: 2px; }
+
+  .show-preview-date    { font-family: 'Caveat', cursive; font-size: 22px; color: #2A2420; line-height: 1.1; }
+  .show-preview-country { font-family: 'Caveat', cursive; font-size: 16px; color: #1B3040; }
+  .show-preview-venue   { font-family: 'Lora', serif; font-size: 17px; color: #2A2420; }
+  .show-preview-city    { font-family: 'Lora', serif; font-size: 13px; color: #6B5D54; }
+
+  .show-preview-ticket {
+    font-family: 'Lora', serif;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #C73B72;
+    text-decoration: none;
+    border: 1.5px solid #C73B72;
+    padding: 5px 12px;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .show-preview-ticket:hover { background: #C73B72; color: #fff; }
+
+  .all-shows-link {
+    display: inline-block;
+    margin-top: 28px;
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    color: #C73B72;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .all-shows-link:hover { border-bottom-color: #C73B72; }
+
+  @media (max-width: 600px) {
+    .inner { padding: 0 20px; }
+    .section-heading, .section-heading-dark { font-size: 28px; }
+    .hero-logo { width: 140px; }
+    .show-preview-row { grid-template-columns: 1fr auto; grid-template-rows: auto auto; }
+    .show-preview-left { grid-column: 1; }
+    .show-preview-right { grid-column: 1; }
+    .show-preview-ticket { grid-column: 2; grid-row: 1 / 3; align-self: center; }
+  }
+</style>

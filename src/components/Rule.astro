@@ -1,0 +1,42 @@
+---
+export interface Props {
+  onBlue?: boolean;
+}
+const { onBlue = false } = Astro.props;
+---
+
+<div class:list={['rule', { 'rule--on-blue': onBlue }]}>
+  <div class="rule-line"></div>
+  <span class="rule-mark">&#10022;</span>
+  <div class="rule-line"></div>
+</div>
+
+<style>
+  .rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  .rule-line {
+    flex: 1;
+    height: 1px;
+    background: #D4C9BE;
+  }
+
+  .rule-mark {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: #9E8F85;
+  }
+
+  /* On blue background — darker lines */
+  .rule--on-blue .rule-line {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .rule--on-blue .rule-mark {
+    color: rgba(0, 0, 0, 0.35);
+  }
+</style>

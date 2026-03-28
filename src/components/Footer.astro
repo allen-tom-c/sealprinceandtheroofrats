@@ -1,0 +1,73 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="footer-inner">
+    <img src="/images/logo-white.png" alt="Seal Prince & the Roof Rats" width="60" height="58" loading="lazy" />
+    <div class="footer-links">
+      <a href="mailto:sealprinceandtheroofrats@gmail.com">sealprinceandtheroofrats@gmail.com</a>
+      <span class="sep">—</span>
+      <a href="https://sealprince.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a>
+    </div>
+    <p class="footer-copy">
+      &copy; {year} Seal Prince &amp; the Roof Rats &nbsp;&middot;&nbsp; Geelong, VIC &nbsp;&middot;&nbsp; Wadawurrung Country
+    </p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    background: #1B3040;
+    padding: 56px 40px 40px;
+    margin-top: 80px;
+  }
+
+  .footer-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .footer-inner img {
+    opacity: 0.6;
+    width: 50px;
+    height: auto;
+  }
+
+  .footer-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .footer-links a {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: #C73B72; }
+
+  .sep {
+    color: rgba(255,255,255,0.25);
+    font-size: 14px;
+  }
+
+  .footer-copy {
+    font-family: 'Lora', serif;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    footer { padding: 40px 20px 32px; }
+  }
+</style>

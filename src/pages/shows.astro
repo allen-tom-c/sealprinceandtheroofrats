@@ -1,0 +1,146 @@
+---
+import Layout   from '../layouts/Layout.astro';
+import Nav      from '../components/Nav.astro';
+import Footer   from '../components/Footer.astro';
+import Rule     from '../components/Rule.astro';
+import ShowRow  from '../components/ShowRow.astro';
+import { getCollection } from 'astro:content';
+
+const allShows = await getCollection('shows');
+
+const upcoming = allShows
+  .filter(s => !s.data.past)
+  .sort((a, b) => a.data.sortDate.localeCompare(b.data.sortDate));
+
+const past = allShows
+  .filter(s => s.data.past)
+  .sort((a, b) => b.data.sortDate.localeCompare(a.data.sortDate)); // most recent first
+---
+
+<Layout
+  title="Shows — Seal Prince & the Roof Rats"
+  description="Upcoming and past shows for Seal Prince & the Roof Rats. Earth-folk from Geelong, VIC."
+>
+  <Nav />
+
+  <section class="page-header">
+    <div class="inner">
+      <h1 class="page-title">Shows</h1>
+      <p class="page-sub">For festival and event bookings, get in touch at <a href="mailto:sealprinceandtheroofrats@gmail.com">sealprinceandtheroofrats@gmail.com</a></p>
+    </div>
+  </section>
+
+  <section class="section-cream">
+    <div class="inner">
+
+      <!-- Upcoming -->
+      <h2 class="shows-heading">Upcoming</h2>
+      <Rule />
+      {upcoming.length > 0 ? (
+        upcoming.map(show => (
+          <ShowRow
+            dateDisplay={show.data.dateDisplay}
+            venue={show.data.venue}
+            city={show.data.city}
+            country={show.data.country}
+            note={show.data.note}
+            ticketUrl={show.data.ticketUrl}
+            past={false}
+          />
+        ))
+      ) : (
+        <p class="no-shows">No upcoming shows listed right now — check back soon.</p>
+      )}
+
+      <!-- Past -->
+      {past.length > 0 && (
+        <div class="past-shows">
+          <h2 class="shows-heading shows-heading--past">Past Shows</h2>
+          <Rule />
+          {past.map(show => (
+            <ShowRow
+              dateDisplay={show.data.dateDisplay}
+              venue={show.data.venue}
+              city={show.data.city}
+              country={show.data.country}
+              note={show.data.note}
+              ticketUrl={show.data.ticketUrl}
+              past={true}
+            />
+          ))}
+        </div>
+      )}
+
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page-header {
+    background: #74C3E1;
+    padding: 64px 0 52px;
+  }
+
+  .inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: #2A2420;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .page-sub {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    color: #2A2420;
+    line-height: 1.6;
+  }
+
+  .page-sub a {
+    color: #1B3040;
+    text-decoration: underline;
+  }
+
+  .section-cream {
+    background: #FAF7F2;
+    padding: 64px 0 80px;
+  }
+
+  .shows-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #2A2420;
+    margin-bottom: 4px;
+  }
+
+  .shows-heading--past {
+    color: #9E8F85;
+  }
+
+  .past-shows {
+    margin-top: 60px;
+  }
+
+  .no-shows {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: #9E8F85;
+    padding: 24px 0;
+  }
+
+  @media (max-width: 600px) {
+    .inner { padding: 0 20px; }
+    .page-title { font-size: 36px; }
+  }
+</style>
