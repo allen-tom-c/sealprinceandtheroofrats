@@ -1,10 +1,58 @@
 {
   "items": [
     {
-      "title": "Life Finds A Way (EP)",
+      "title": "Life Finds A Way (Single)",
       "bandcampUrl": "https://sealprince.bandcamp.com/track/life-finds-a-way",
       "artwork": "/images/uploads/life-finds-a-way.jpg",
       "year": "2026"
+    },
+    {
+      "title": "The Original Hippies (Single)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/track/the-original-hippies",
+      "artwork": "/images/uploads/the-original-hippies.avif",
+      "year": "2025"
+    },
+    {
+      "title": "Barwon River Song (Single)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/track/barwon-river-song",
+      "artwork": "/images/uploads/barwon-river-song.avif",
+      "year": "2024"
+    },
+    {
+      "title": "Head Up, Heart Out (Single)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/track/head-up-heart-out",
+      "artwork": "/images/uploads/head-up-heart-out.avif",
+      "year": "2024"
+    },
+    {
+      "title": "The Change Has Just Begun (Single)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/track/the-change-has-just-begun",
+      "artwork": "/images/uploads/the-change-has-just-begun.avif",
+      "year": "2024"
+    },
+    {
+      "title": "Threads to Follow (Album)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/album/threads-to-follow",
+      "artwork": "/images/uploads/threads-to-follow-album-.avif",
+      "year": "2022"
+    },
+    {
+      "title": "Threads to Follow (Single)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/album/threads-to-follow-2",
+      "artwork": "/images/uploads/threads-to-follow-single-.avif",
+      "year": "2022"
+    },
+    {
+      "title": "Someone Else's Problem (Single)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/album/someone-elses-problem",
+      "artwork": "/images/uploads/someone-elses-problem.avif",
+      "year": "2022"
+    },
+    {
+      "title": "Live in Norlane (Album)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/album/live-in-norlane",
+      "artwork": "/images/uploads/live-in-norlane.avif",
+      "year": "2022"
     }
   ]
 }
