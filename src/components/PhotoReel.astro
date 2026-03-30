@@ -13,8 +13,6 @@ const { photos } = Astro.props;
         src={photo.src}
         alt={photo.alt}
         loading={i < 3 ? 'eager' : 'lazy'}
-        width="440"
-        height="330"
         class="reel-photo"
       />
     ))}
@@ -42,15 +40,14 @@ const { photos } = Astro.props;
   .photo-reel::-webkit-scrollbar-thumb { background: #D4C9BE; border-radius: 2px; }
 
   .reel-photo {
-    width: 440px;
-    height: 330px;
-    object-fit: cover;
+    height: 420px;
+    width: auto;
     flex-shrink: 0;
     display: block;
   }
 
   @media (max-width: 600px) {
     .photo-reel { padding: 0 20px; }
-    .reel-photo { width: 300px; height: 225px; }
+    .reel-photo { height: 260px; }
   }
 </style>
