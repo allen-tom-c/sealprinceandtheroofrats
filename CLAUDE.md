@@ -58,7 +58,7 @@ white:     #FFFFFF
 ```
 
 ### Typography
-- **Headings:** Playfair Display (serif) — page titles, section headings
+- **Headings:** Neuton (serif) — page titles, section headings
 - **Body:** Lora (serif) — body text, nav links, show details
 - **Accents:** Caveat (handwritten) — dates, country names, Rule dividers, Acknowledgement heading
 
