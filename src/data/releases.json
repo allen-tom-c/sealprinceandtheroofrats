@@ -1,3 +1,10 @@
 {
-  "items": []
+  "items": [
+    {
+      "title": "Life Finds A Way (EP)",
+      "bandcampUrl": "https://sealprince.bandcamp.com/track/life-finds-a-way",
+      "artwork": "/images/uploads/life-finds-a-way.jpg",
+      "year": "2026"
+    }
+  ]
 }
