@@ -6,5 +6,5 @@ city: Newstead, VIC
 country: Dja Dja Wurrung
 note: Festival
 ticketUrl: TBC
-past: true
+past: false
 ---
