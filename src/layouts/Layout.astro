@@ -49,11 +49,22 @@ const {
   <slot />
 
   <script>
-    // Netlify Identity redirect after login
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', (user: any) => {
+    // Netlify Identity — handle invite/recovery tokens and post-login redirect
+    const netlifyIdentity = (window as any).netlifyIdentity;
+    if (netlifyIdentity) {
+      netlifyIdentity.on('init', (user: any) => {
+        // If there's an invite or recovery token in the URL, open the modal
+        const hash = window.location.hash;
+        if (hash && (
+          hash.includes('invite_token') ||
+          hash.includes('recovery_token') ||
+          hash.includes('confirmation_token')
+        )) {
+          netlifyIdentity.open();
+        }
+        // After login, redirect to the CMS
         if (!user) {
-          window.netlifyIdentity.on('login', () => {
+          netlifyIdentity.on('login', () => {
             document.location.href = '/admin/';
           });
         }
