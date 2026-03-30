@@ -48,28 +48,29 @@ const {
 <body>
   <slot />
 
-  <script>
-    // Netlify Identity — handle invite/recovery tokens and post-login redirect
-    const netlifyIdentity = (window as any).netlifyIdentity;
-    if (netlifyIdentity) {
-      netlifyIdentity.on('init', (user: any) => {
-        // If there's an invite or recovery token in the URL, open the modal
-        const hash = window.location.hash;
-        if (hash && (
-          hash.includes('invite_token') ||
-          hash.includes('recovery_token') ||
-          hash.includes('confirmation_token')
-        )) {
-          netlifyIdentity.open();
-        }
-        // After login, redirect to the CMS
+  <script is:inline>
+    // is:inline ensures this runs immediately (not as a deferred module)
+    // so we don't miss the Netlify Identity 'init' event
+    (function () {
+      var ni = window.netlifyIdentity;
+      if (!ni) return;
+
+      var hasToken = /invite_token|recovery_token|confirmation_token/.test(window.location.hash);
+
+      ni.on('init', function (user) {
+        if (hasToken) ni.open();
         if (!user) {
-          netlifyIdentity.on('login', () => {
+          ni.on('login', function () {
             document.location.href = '/admin/';
           });
         }
       });
-    }
+
+      // Safety net: if init already fired before this script ran, open directly
+      if (hasToken) {
+        setTimeout(function () { ni.open(); }, 500);
+      }
+    })();
   </script>
 </body>
 </html>
