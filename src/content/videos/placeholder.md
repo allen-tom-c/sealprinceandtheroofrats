@@ -1,5 +1,5 @@
 ---
-title: "Add your first video"
-youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+title: Life Finds A Way
+youtubeUrl: https://youtu.be/qmSnBAwckP4?si=y5hAo_6HLFgCZFq0
 order: 1
 ---
