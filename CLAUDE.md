@@ -35,7 +35,8 @@ Why Netlify instead of Tom's usual Vercel: Netlify Identity integrates natively 
 |----------|-------------------|-------------------------------|
 | /        | Home              | src/pages/index.astro         |
 | /shows   | Shows             | src/pages/shows.astro         |
-| /videos  | Videos            | src/pages/videos.astro        |
+| /media   | Media             | src/pages/media.astro         |
+| /videos  | → redirect /media | src/pages/videos.astro        |
 | /admin   | CMS (Decap)       | public/admin/index.html       |
 
 ---
@@ -81,13 +82,15 @@ white:     #FFFFFF
 
 ### Managed via Decap CMS (/admin)
 
-| Content      | File(s)                       | CMS collection     |
-|--------------|-------------------------------|--------------------|
-| Shows        | src/content/shows/*.md        | Folder: Shows      |
-| Videos       | src/content/videos/*.md       | Folder: Videos     |
-| Bio text     | src/data/bio.json             | File: Bio & About  |
-| Testimonials | src/data/testimonials.json    | File: Testimonials |
-| Photo reel   | src/data/photos.json          | File: Photo Reel   |
+| Content           | File(s)                       | CMS collection              |
+|-------------------|-------------------------------|-----------------------------|
+| Shows             | src/content/shows/*.md        | Folder: Shows               |
+| Videos            | src/content/videos/*.md       | Folder: Videos              |
+| Bio text          | src/data/bio.json             | File: Bio & About           |
+| Testimonials      | src/data/testimonials.json    | File: Testimonials          |
+| Photo reel        | src/data/photos.json          | File: Photo Reel (Homepage) |
+| Media page photos | src/data/media-photos.json    | File: Media Page — Photos   |
+| Releases          | src/data/releases.json        | File: Music / Releases      |
 
 ### Show frontmatter fields
 ```yaml
@@ -106,6 +109,16 @@ past: false                     # true = moves to Past Shows at 50% opacity
 title: "Barwon River Song — Live at Nannup"
 youtubeUrl: "https://www.youtube.com/watch?v=XXXXXXXXXXX"
 order: 1   # lower = appears first
+```
+
+### Release item fields (releases.json)
+```json
+{
+  "title": "Barwon River Songs EP",
+  "bandcampUrl": "https://sealprince.bandcamp.com/album/...",
+  "artwork": "/images/uploads/barwon-river-songs.jpg",
+  "year": "2024"
+}
 ```
 
 ---
@@ -132,7 +145,9 @@ astro-site/
 │   ├── data/
 │   │   ├── bio.json            # Bio paragraphs + acknowledgement
 │   │   ├── testimonials.json   # Testimonials/reviews list
-│   │   └── photos.json         # Photo reel list (src + alt)
+│   │   ├── photos.json         # Photo reel list (homepage only)
+│   │   ├── media-photos.json   # Media page photo gallery
+│   │   └── releases.json       # Album/EP releases (artwork + Bandcamp links)
 │   ├── layouts/
 │   │   └── Layout.astro        # Base HTML, fonts, global styles
 │   ├── components/
@@ -144,9 +159,11 @@ astro-site/
 │   │   ├── Carousel.astro      # Testimonials carousel (vanilla JS)
 │   │   └── VideoEmbed.astro    # YouTube embed with ID extraction
 │   └── pages/
-│       ├── index.astro         # Home (hero, photo reel, bio, shows preview, testimonials, music)
+│       ├── index.astro         # Home (hero, photo reel, releases, bio, shows preview, testimonials)
 │       ├── shows.astro         # Full shows list (upcoming + past)
-│       └── videos.astro        # Video grid
+│       ├── media.astro         # Media page (videos first, then photos)
+│       ├── videos.astro        # Redirect → /media
+│       └── font-demo.astro     # TEMP: font comparison page — delete after font is chosen
 ├── astro.config.mjs
 ├── netlify.toml
 ├── package.json
@@ -182,14 +199,43 @@ npm run compress
 
 ## Netlify setup (one-time, done via Netlify dashboard)
 
-1. Connect GitHub repo to Netlify (New site → Import from GitHub)
+1. Connect GitHub repo to Netlify (Add new project → Import from GitHub)
 2. Build command: `npm run build` | Publish directory: `dist`
-3. Enable **Netlify Identity** (Site settings → Identity → Enable)
+3. Enable **Netlify Identity** (Identity in left sidebar)
 4. Under Identity → Registration: set to **Invite only**
-5. Under Identity → Services: enable **Git Gateway**
-6. Invite Lachie via email (Identity → Invite users)
+5. Under Identity → Services: enable **Git Gateway** — THIS IS CRITICAL. Without Git Gateway, Decap CMS cannot authenticate or write to GitHub. It is a separate step from enabling Identity.
+6. Invite users via email (Identity → Invite users)
 7. Add custom domain `sealprince.com` (Domain management)
-8. In WordPress.com domain dashboard, point nameservers to Netlify's
+8. Use **Set up Netlify DNS** option — Netlify takes over DNS entirely, simpler than adding individual records
+9. In WordPress.com domain dashboard, point nameservers to the four Netlify DNS nameservers provided
+
+## Netlify Identity — how the invite/login flow works
+
+**IMPORTANT:** The Netlify Identity widget on the main site does NOT reliably handle invite or recovery tokens. The correct flow is:
+
+- Invite/recovery emails link to `sealprince.com/#invite_token=xxx`
+- The Layout.astro script detects this token and **redirects to `/admin/#invite_token=xxx`**
+- Decap CMS handles the token natively at `/admin` and shows the password setup dialog
+- This redirect is the reliable approach — do not try to open the identity widget popup on the main site
+
+The Layout.astro script handles this:
+```js
+if (hash && /invite_token|recovery_token|confirmation_token/.test(hash)) {
+  window.location.replace('/admin/' + hash);
+  return;
+}
+```
+
+**Astro script tag note:** Identity-related scripts must use `is:inline` in Astro. Without it, Astro bundles scripts as deferred modules, causing timing issues where the Netlify Identity `init` event fires before the handler is attached.
+
+## DNS propagation notes
+
+- After switching nameservers, propagation can take up to 48 hours
+- dnschecker.org shows per-region propagation status
+- SSL certificate provisioning happens automatically once DNS resolves to Netlify
+- Local browser/machine DNS cache can persist even after global propagation — test on mobile data to confirm the live state
+- Chrome on a managed-profile Mac may have locked DNS settings; use Safari for testing in this case
+- Mac DNS flush command: `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder`
 
 ---
 

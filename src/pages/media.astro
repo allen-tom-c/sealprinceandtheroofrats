@@ -6,11 +6,11 @@ import Rule       from '../components/Rule.astro';
 import VideoEmbed from '../components/VideoEmbed.astro';
 import { getCollection } from 'astro:content';
 
-import photosData from '../data/photos.json';
+import mediaPhotosData from '../data/media-photos.json';
 
 const allVideos = await getCollection('videos');
 const videos = allVideos.sort((a, b) => a.data.order - b.data.order);
-const photos = photosData.items;
+const photos = mediaPhotosData.items;
 ---
 
 <Layout
@@ -27,9 +27,27 @@ const photos = photosData.items;
 
   <div class="page-body">
 
+    <!-- ── VIDEOS ──────────────────────────────────────────────────────── -->
+    {videos.length > 0 && (
+      <section class="section-cream">
+        <div class="inner">
+          <h2 class="section-heading">Videos</h2>
+          <Rule />
+          <div class="video-grid">
+            {videos.map(video => (
+              <VideoEmbed
+                title={video.data.title}
+                youtubeUrl={video.data.youtubeUrl}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- ── PHOTOS ──────────────────────────────────────────────────────── -->
     {photos.length > 0 && (
-      <section class="section-cream">
+      <section class="section-warm">
         <div class="inner">
           <h2 class="section-heading">Photos</h2>
           <Rule />
@@ -43,24 +61,6 @@ const photos = photosData.items;
                   class="photo-img"
                 />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )}
-
-    <!-- ── VIDEOS ──────────────────────────────────────────────────────── -->
-    {videos.length > 0 && (
-      <section class="section-warm">
-        <div class="inner">
-          <h2 class="section-heading">Videos</h2>
-          <Rule />
-          <div class="video-grid">
-            {videos.map(video => (
-              <VideoEmbed
-                title={video.data.title}
-                youtubeUrl={video.data.youtubeUrl}
-              />
             ))}
           </div>
         </div>
@@ -94,7 +94,7 @@ const photos = photosData.items;
   }
 
   .page-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Neuton', serif;
     font-size: 52px;
     font-weight: 700;
     color: #2A2420;
@@ -106,11 +106,21 @@ const photos = photosData.items;
   .section-warm  { background: #F2EBE0; padding: 64px 0 72px; }
 
   .section-heading {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Neuton', serif;
     font-size: 32px;
-    font-weight: 600;
+    font-weight: 700;
     color: #2A2420;
     margin-bottom: 4px;
+  }
+
+  /* ── VIDEO GRID ──
+     auto-fill: creates as many columns as fit, min 320px each.
+     Adding more videos just adds more cells.
+  ── */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
   }
 
   /* ── PHOTO GRID ──
@@ -133,16 +143,6 @@ const photos = photosData.items;
     height: auto;
     display: block;
     object-fit: cover;
-  }
-
-  /* ── VIDEO GRID ──
-     auto-fill: creates as many columns as fit, min 320px each.
-     Adding more videos just adds more cells.
-  ── */
-  .video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 32px;
   }
 
   .empty-state {

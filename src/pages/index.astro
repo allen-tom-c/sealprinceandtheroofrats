@@ -10,6 +10,7 @@ import { getCollection } from 'astro:content';
 import bio           from '../data/bio.json';
 import testimonials  from '../data/testimonials.json';
 import photosData    from '../data/photos.json';
+import releasesData  from '../data/releases.json';
 
 const allShows = await getCollection('shows');
 const upcoming = allShows
@@ -55,7 +56,30 @@ const upcoming = allShows
     <div class="inner">
       <h2 class="section-heading-dark">Music</h2>
       <Rule />
-      <p class="music-placeholder">[Tom/Lachie to add: Bandcamp embed or link to latest releases. Can also include album artwork grid.]</p>
+      {releasesData.items.length > 0 ? (
+        <div class="releases-grid">
+          {releasesData.items.map(release => (
+            <a
+              href={release.bandcampUrl}
+              target="_blank"
+              rel="noopener"
+              class="release-tile"
+              title={release.title}
+            >
+              <img
+                src={release.artwork}
+                alt={release.title}
+                class="release-artwork"
+                loading="lazy"
+              />
+              <p class="release-title">{release.title}</p>
+              {release.year && <p class="release-year">{release.year}</p>}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="music-placeholder">[Lachie to add: Upload album and EP artworks via the CMS — Music / Releases]</p>
+      )}
       <a href="https://sealprince.bandcamp.com" target="_blank" rel="noopener" class="bandcamp-link">Listen on Bandcamp</a>
     </div>
   </section>
@@ -198,8 +222,8 @@ const upcoming = allShows
   }
 
   /* ── HEADINGS ── */
-  .section-heading      { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; color: #2A2420; margin-bottom: 8px; }
-  .section-heading-dark { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 600; color: #2A2420; margin-bottom: 8px; }
+  .section-heading      { font-family: 'Neuton', serif; font-size: 38px; font-weight: 700; color: #2A2420; margin-bottom: 8px; }
+  .section-heading-dark { font-family: 'Neuton', serif; font-size: 38px; font-weight: 700; color: #2A2420; margin-bottom: 8px; }
 
   /* ── MUSIC ── */
   .music-placeholder {
@@ -225,6 +249,47 @@ const upcoming = allShows
   }
 
   .bandcamp-link:hover { background: #74C3E1; color: #1B3040; }
+
+  /* ── RELEASES GRID ── */
+  .releases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+
+  .release-tile {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .release-tile:hover .release-artwork {
+    opacity: 0.85;
+  }
+
+  .release-artwork {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.2s;
+  }
+
+  .release-title {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    color: #2A2420;
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  .release-year {
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    color: #6B5D54;
+    margin-top: 2px;
+  }
 
   /* ── BIO ── */
   .bio-para { font-family: 'Lora', serif; font-size: 17px; line-height: 1.9; color: #2A2420; margin-bottom: 24px; }

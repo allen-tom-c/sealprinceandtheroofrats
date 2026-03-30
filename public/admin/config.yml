@@ -118,13 +118,13 @@ collections:
               - { label: Role / Description, name: role, widget: string }
 
       - name: photos
-        label: Photo Reel
+        label: Photo Reel (Homepage)
         file: src/data/photos.json
         fields:
           - label: Photos
             name: items
             widget: list
-            hint: "Drag to reorder. Images appear left-to-right in the reel."
+            hint: "Drag to reorder. These photos appear in the scrolling reel on the homepage only."
             fields:
               - label: Photo
                 name: src
@@ -134,3 +134,48 @@ collections:
                 name: alt
                 widget: string
                 hint: "Describe the photo for accessibility — e.g. 'Lachie playing guitar at Nannup'"
+
+      - name: media-photos
+        label: Media Page — Photos
+        file: src/data/media-photos.json
+        fields:
+          - label: Photos
+            name: items
+            widget: list
+            hint: "Drag to reorder. These photos appear in the gallery on the Media page."
+            fields:
+              - label: Photo
+                name: src
+                widget: image
+                hint: "Upload a photo. Max 2MB recommended."
+              - label: Alt Text
+                name: alt
+                widget: string
+                hint: "Describe the photo for accessibility — e.g. 'Lachie on stage at Nannup Folk Festival'"
+
+      - name: releases
+        label: Music / Releases
+        file: src/data/releases.json
+        fields:
+          - label: Releases
+            name: items
+            widget: list
+            hint: "Drag to reorder. Each release appears as a tile in the Music section."
+            fields:
+              - label: Title
+                name: title
+                widget: string
+                hint: "Album or EP name — e.g. 'Barwon River Songs EP'"
+              - label: Bandcamp URL
+                name: bandcampUrl
+                widget: string
+                hint: "Full Bandcamp link — e.g. https://sealprince.bandcamp.com/album/..."
+              - label: Artwork
+                name: artwork
+                widget: image
+                hint: "Upload the album/EP artwork. Square images work best."
+              - label: Year
+                name: year
+                widget: string
+                required: false
+                hint: "Optional — e.g. '2024'"
