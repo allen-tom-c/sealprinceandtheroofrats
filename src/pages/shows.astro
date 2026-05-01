@@ -7,13 +7,14 @@ import ShowRow  from '../components/ShowRow.astro';
 import { getCollection } from 'astro:content';
 
 const allShows = await getCollection('shows');
+const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD at build time
 
 const upcoming = allShows
-  .filter(s => !s.data.past)
+  .filter(s => s.data.sortDate >= today)
   .sort((a, b) => a.data.sortDate.localeCompare(b.data.sortDate));
 
 const past = allShows
-  .filter(s => s.data.past)
+  .filter(s => s.data.sortDate < today)
   .sort((a, b) => b.data.sortDate.localeCompare(a.data.sortDate)); // most recent first
 ---
 
@@ -34,23 +35,26 @@ const past = allShows
     <div class="inner">
 
       <!-- Upcoming -->
-      <h2 class="shows-heading">Upcoming</h2>
-      <Rule />
-      {upcoming.length > 0 ? (
-        upcoming.map(show => (
-          <ShowRow
-            dateDisplay={show.data.dateDisplay}
-            venue={show.data.venue}
-            city={show.data.city}
-            country={show.data.country}
-            note={show.data.note}
-            ticketUrl={show.data.ticketUrl}
-            past={false}
-          />
-        ))
-      ) : (
-        <p class="no-shows">No upcoming shows listed right now — check back soon.</p>
-      )}
+      <div id="upcoming-shows">
+        <h2 class="shows-heading">Upcoming</h2>
+        <Rule />
+        {upcoming.length > 0 ? (
+          upcoming.map(show => (
+            <ShowRow
+              dateDisplay={show.data.dateDisplay}
+              sortDate={show.data.sortDate}
+              venue={show.data.venue}
+              city={show.data.city}
+              country={show.data.country}
+              note={show.data.note}
+              ticketUrl={show.data.ticketUrl}
+              past={false}
+            />
+          ))
+        ) : (
+          <p class="no-shows" id="no-upcoming-msg">No upcoming shows listed right now — check back soon.</p>
+        )}
+      </div>
 
       <!-- Past -->
       {past.length > 0 && (
@@ -60,6 +64,7 @@ const past = allShows
           {past.map(show => (
             <ShowRow
               dateDisplay={show.data.dateDisplay}
+              sortDate={show.data.sortDate}
               venue={show.data.venue}
               city={show.data.city}
               country={show.data.country}
@@ -73,6 +78,31 @@ const past = allShows
 
     </div>
   </section>
+
+  <!-- Client-side safety net: hides upcoming rows that have passed since the last build -->
+  <script is:inline>
+    (function () {
+      var today = new Date().toISOString().slice(0, 10);
+      var section = document.getElementById('upcoming-shows');
+      if (!section) return;
+      var rows = section.querySelectorAll('[data-sort-date]');
+      var visible = 0;
+      rows.forEach(function (row) {
+        if (row.dataset.sortDate < today) {
+          row.style.display = 'none';
+        } else {
+          visible++;
+        }
+      });
+      // Show "no upcoming" message if everything has been hidden
+      if (visible === 0 && !document.getElementById('no-upcoming-msg')) {
+        var msg = document.createElement('p');
+        msg.className = 'no-shows';
+        msg.textContent = 'No upcoming shows listed right now — check back soon.';
+        section.appendChild(msg);
+      }
+    })();
+  </script>
 
   <Footer />
 </Layout>

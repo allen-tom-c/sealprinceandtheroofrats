@@ -1,6 +1,7 @@
 ---
 export interface Props {
   dateDisplay: string;
+  sortDate?:   string;
   venue:       string;
   city:        string;
   country:     string;
@@ -9,10 +10,10 @@ export interface Props {
   past?:       boolean;
 }
 
-const { dateDisplay, venue, city, country, note, ticketUrl, past = false } = Astro.props;
+const { dateDisplay, sortDate, venue, city, country, note, ticketUrl, past = false } = Astro.props;
 ---
 
-<div class:list={['show-row', { 'show-row--past': past }]}>
+<div class:list={['show-row', { 'show-row--past': past }]} data-sort-date={sortDate}>
   <div class="show-date">
     <span class="date-text">{dateDisplay}</span>
     {note && <span class="show-note">{note}</span>}

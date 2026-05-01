@@ -13,8 +13,9 @@ import photosData    from '../data/photos.json';
 import releasesData  from '../data/releases.json';
 
 const allShows = await getCollection('shows');
+const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD at build time
 const upcoming = allShows
-  .filter(s => !s.data.past)
+  .filter(s => s.data.sortDate >= today)
   .sort((a, b) => a.data.sortDate.localeCompare(b.data.sortDate))
   .slice(0, 3);
 ---
@@ -23,6 +24,28 @@ const upcoming = allShows
   title="Seal Prince & the Roof Rats — Earth-folk from Geelong"
   description="Earth-folk from Geelong, VIC. Playful, raucous, tender, heartfelt. Book us for your festival or event."
 >
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Seal Prince & the Roof Rats",
+    "url": "https://sealprince.com",
+    "description": "Earth-folk band from Geelong, VIC. Playful, raucous, tender, heartfelt.",
+    "genre": ["Folk", "Earth-folk", "Australian folk"],
+    "foundingLocation": {
+      "@type": "Place",
+      "name": "Geelong, Victoria, Australia"
+    },
+    "image": "https://sealprince.com/images/photos/photo-2.jpg",
+    "sameAs": [
+      "https://sealprince.bandcamp.com"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "sealprinceandtheroofrats@gmail.com",
+      "contactType": "Bookings"
+    }
+  })} />
   <Nav />
 
   <!-- ── HERO ──────────────────────────────────────────────────────────── -->
@@ -101,13 +124,13 @@ const upcoming = allShows
 
   <!-- ── COMING UP ─────────────────────────────────────────────────────── -->
   {upcoming.length > 0 && (
-    <section class="section-cream">
+    <section class="section-cream" id="coming-up">
       <div class="inner">
         <h2 class="section-heading-dark">Coming up</h2>
         <Rule />
         <div class="shows-preview">
           {upcoming.map(show => (
-            <div class="show-preview-row">
+            <div class="show-preview-row" data-sort-date={show.data.sortDate}>
               <div class="show-preview-left">
                 <span class="show-preview-date">{show.data.dateDisplay}</span>
                 <span class="show-preview-country">{show.data.country}</span>
@@ -126,6 +149,26 @@ const upcoming = allShows
       </div>
     </section>
   )}
+
+  <!-- Client-side safety net: hides any show rows that have passed since the last build -->
+  <script is:inline>
+    (function () {
+      var today = new Date().toISOString().slice(0, 10);
+      var section = document.getElementById('coming-up');
+      if (!section) return;
+      var rows = section.querySelectorAll('[data-sort-date]');
+      var visible = 0;
+      rows.forEach(function (row) {
+        if (row.dataset.sortDate < today) {
+          row.style.display = 'none';
+        } else {
+          visible++;
+        }
+      });
+      // Hide the whole section if nothing is left to show
+      if (visible === 0) section.style.display = 'none';
+    })();
+  </script>
 
   <!-- ── TESTIMONIALS ──────────────────────────────────────────────────── -->
   <section class="section-warm">

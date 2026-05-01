@@ -6,5 +6,5 @@ city: Hawkesbury, NSW
 country: Dharug Country
 note: Festival
 ticketUrl: https://www.stalbansfolkfestival.com.au/
-past: false
+past: true
 ---

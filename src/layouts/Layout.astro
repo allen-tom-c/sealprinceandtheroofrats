@@ -2,12 +2,16 @@
 export interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = 'Seal Prince & the Roof Rats',
-  description = 'Earth-folk from Geelong, VIC. Book us for your festival or event.',
+  description = 'Earth-folk from Geelong, VIC. Playful, raucous, tender, heartfelt. Book us for your festival or event.',
+  ogImage = '/images/photos/photo-2.jpg',
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, 'https://sealprince.com');
 ---
 <!doctype html>
 <html lang="en">
@@ -17,16 +21,29 @@ const {
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta name="robots" content="index, follow" />
+  <link rel="canonical" href={canonicalURL} />
 
   <!-- Open Graph -->
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/images/logo-black.png" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:image" content={`https://sealprince.com${ogImage}`} />
+  <meta property="og:site_name" content="Seal Prince & the Roof Rats" />
+  <meta property="og:locale" content="en_AU" />
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={`https://sealprince.com${ogImage}`} />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Neuton:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Per-page head extras (structured data, etc.) -->
+  <slot name="head" />
 
   <!-- Netlify Identity (for Decap CMS login redirect) -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
